@@ -39,28 +39,28 @@ const MarketHeroChart = dynamic(
 
 const MARKET_HERO_ROTATE_INTERVAL_MS = 10000;
 
-function heroFlag(symbol: string) {
-  if (symbol === "^GSPC" || symbol === "^IXIC" || symbol === "^DJI") {
-    return "🇺🇸";
+function heroBadge(ticker: MarketTicker) {
+  if (ticker.group === "kr-stock") {
+    return "KR";
   }
 
-  if (symbol === "SPY" || symbol === "QQQ" || symbol === "DIA") {
-    return "🇺🇸";
+  if (ticker.group === "us-market") {
+    return "US";
   }
 
-  if (symbol.includes("USD")) {
-    return "🇺🇸";
+  if (ticker.symbol.includes("JPY")) {
+    return "JP";
   }
 
-  if (symbol.includes("JPY")) {
-    return "🇯🇵";
+  if (ticker.symbol.includes("EUR")) {
+    return "EU";
   }
 
-  if (symbol.includes("EUR")) {
-    return "🇪🇺";
+  if (ticker.symbol.includes("USD")) {
+    return "US";
   }
 
-  return "•";
+  return "FX";
 }
 
 function MarketCard({
@@ -121,11 +121,23 @@ export function BoardClient({ initialData }: BoardClientProps) {
 
   const board = data || initialData;
   const newsSource = board.news[0]?.source || "뉴스";
-  const newsPageSize = Math.max(1, Math.floor(board.newsPageSize || 6));
+  const configuredNewsPageSize = Math.max(1, Math.floor(board.newsPageSize || 6));
   const newsSlideIntervalMs = Math.max(
     2000,
     Math.floor(board.newsSlideIntervalMs || 8000),
   );
+  const [viewportWidth, setViewportWidth] = useState<number | null>(null);
+  const newsPageSize = useMemo(() => {
+    if (viewportWidth !== null && viewportWidth <= 480) {
+      return Math.min(configuredNewsPageSize, 3);
+    }
+
+    if (viewportWidth !== null && viewportWidth <= 720) {
+      return Math.min(configuredNewsPageSize, 4);
+    }
+
+    return configuredNewsPageSize;
+  }, [configuredNewsPageSize, viewportWidth]);
   const newsPages = useMemo(
     () => chunkNews(board.news, newsPageSize),
     [board.news, newsPageSize],
@@ -142,6 +154,17 @@ export function BoardClient({ initialData }: BoardClientProps) {
   const [heroIndex, setHeroIndex] = useState(() =>
     getPreferredHeroIndex(heroTickers),
   );
+
+  useEffect(() => {
+    const syncViewportWidth = () => {
+      setViewportWidth(window.innerWidth);
+    };
+
+    syncViewportWidth();
+    window.addEventListener("resize", syncViewportWidth, { passive: true });
+
+    return () => window.removeEventListener("resize", syncViewportWidth);
+  }, []);
 
   useEffect(() => {
     setNewsPageIndex(0);
@@ -290,7 +313,7 @@ export function BoardClient({ initialData }: BoardClientProps) {
                     })}
                     %
                   </span>
-                  <span className="heroFlag">{heroFlag(marketHero.symbol)}</span>
+                  <span className="heroFlag">{heroBadge(marketHero)}</span>
                 </div>
               </div>
               <MarketHeroChart

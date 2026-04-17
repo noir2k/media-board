@@ -106,6 +106,9 @@ a {
   gap: 22px;
   align-content: start;
   min-height: 100%;
+  flex: 0 0 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 .signageNewsList li {
@@ -144,20 +147,18 @@ a {
 
 .weatherHeroBlock {
   display: flex;
-  align-items: center;
-  gap: 16px;
+  align-items: flex-start;
+  gap: 20px;
 }
 
 .weatherHeroIcon {
-  width: clamp(56px, 4.6vw, 92px);
-  height: clamp(56px, 4.6vw, 92px);
-  color: #f1efe7;
+  width: clamp(88px, 7.2vw, 136px);
+  height: clamp(88px, 7.2vw, 136px);
   flex: none;
-}
-
-.weatherHeroIcon svg {
-  width: 100%;
-  height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: invert(0.94) brightness(1.08);
+  opacity: 0.98;
 }
 
 .weatherHeroTemp {
@@ -357,11 +358,17 @@ a {
 .heroFlag {
   width: 40px;
   height: 40px;
-  display: grid;
-  place-items: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.08);
-  font-size: 1.05rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .heroChartCanvas,
@@ -449,27 +456,136 @@ a {
   }
 }
 
+@media (max-width: 820px) {
+  .newsArea {
+    display: block;
+  }
+
+  .newsViewport {
+    flex: none;
+    height: clamp(170px, 28vh, 240px);
+    min-height: 0;
+  }
+
+  .newsPages {
+    height: 100%;
+  }
+
+  .signageNewsList {
+    min-height: 100%;
+    height: 100%;
+  }
+}
+
 @media (max-width: 720px) {
+  html,
+  body {
+    min-height: auto;
+    overflow-x: hidden;
+  }
+
   .boardShell {
     padding: 0;
+    width: 100%;
+    min-height: auto;
   }
 
   .signageBoard {
+    width: 100%;
+    height: auto;
+    min-height: auto;
     padding: 10px;
     gap: 10px;
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    grid-auto-rows: minmax(min-content, auto);
+    align-content: start;
+  }
+
+  .newsArea,
+  .weatherArea,
+  .heroArea,
+  .marketArea {
+    overflow: visible;
+  }
+
+  .newsArea {
+    padding: 18px 18px 14px;
+  }
+
+  .newsSource {
+    margin-bottom: 18px;
+    font-size: 1.5rem;
+  }
+
+  .newsViewport {
+    height: 172px;
+    min-height: 172px;
+    max-height: 172px;
+  }
+
+  .signageNewsList {
+    gap: 12px;
+  }
+
+  .signageNewsList li {
+    grid-template-columns: 16px minmax(0, 1fr);
+    column-gap: 10px;
+  }
+
+  .signageNewsText {
+    display: -webkit-box;
+    font-size: 0.95rem;
+    line-height: 1.28;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .weatherArea {
+    padding: 16px 18px 18px;
+    gap: 18px;
+  }
+
+  .weatherHeader {
+    margin-bottom: 0;
+  }
+
+  .weatherHeroBlock {
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .weatherHeroIcon {
+    width: 64px;
+    height: 64px;
+  }
+
+  .weatherHeroTemp {
+    gap: 6px;
+  }
+
+  .weatherHeroTemp strong {
+    font-size: 3rem;
+  }
+
+  .weatherHeroMeta {
+    gap: 10px;
+    font-size: 0.98rem;
   }
 
   .weatherFooter {
     flex-direction: column;
     align-items: flex-start;
+    gap: 12px;
+    margin-top: 12px;
   }
 
   .weatherNow {
     text-align: left;
-  }
-
-  .weatherHeroBlock {
-    align-items: flex-start;
+    gap: 4px;
+    font-size: 1.2rem;
   }
 
   .weatherRow {
@@ -478,11 +594,83 @@ a {
     font-size: 0.88rem;
   }
 
-  .marketGrid {
-    grid-template-columns: 1fr;
+  .clockPanel {
+    gap: 6px;
   }
 
-  .signageNewsList a {
-    font-size: 0.96rem;
+  .clockTimeRow {
+    gap: 12px;
+  }
+
+  .clockPeriod {
+    font-size: 1rem;
+  }
+
+  .clockPeriodDivider {
+    width: 24px;
+  }
+
+  .clockTimeRow strong {
+    font-size: 3.4rem;
+  }
+
+  .clockDate {
+    font-size: 1.15rem;
+  }
+
+  .heroArea {
+    padding: 10px;
+  }
+
+  .heroMarketCard {
+    padding: 16px 16px 14px;
+    gap: 10px;
+  }
+
+  .heroMarketTop strong {
+    font-size: 2.6rem;
+  }
+
+  .heroMarketExchange {
+    margin-top: 8px;
+    font-size: 0.84rem;
+  }
+
+  .heroChange {
+    font-size: 0.95rem;
+  }
+
+  .heroFlag {
+    width: 34px;
+    height: 34px;
+    font-size: 0.72rem;
+  }
+
+  .heroChartCanvas,
+  .heroChartPlaceholder {
+    min-height: 168px;
+  }
+
+  .marketArea {
+    padding: 14px 16px 16px;
+  }
+
+  .marketGrid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .marketCard {
+    min-height: 72px;
+    padding: 8px 0;
+  }
+
+  .marketCard strong {
+    font-size: 1.9rem;
+  }
+
+  .marketCardName,
+  .marketCardChange {
+    font-size: 0.88rem;
   }
 }
